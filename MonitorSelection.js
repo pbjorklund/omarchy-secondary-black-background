@@ -1,20 +1,14 @@
 function parsePreferences(raw) {
   if (typeof raw !== "string" || raw.length > 4096) return []
 
-  try {
-    const config = JSON.parse(raw)
-    if (!config || Array.isArray(config) || !Array.isArray(config.mainMonitors)) return []
-    if (config.mainMonitors.length > 16) return []
+  const values = raw.split(",")
+  if (values.length > 16) return []
 
-    const preferences = config.mainMonitors
-      .filter(value => typeof value === "string")
-      .map(value => value.trim())
-      .filter(value => value.length > 0)
+  const preferences = values
+    .map(value => value.trim())
+    .filter(value => value.length > 0)
 
-    return preferences.some(value => value.length > 256) ? [] : preferences
-  } catch (error) {
-    return []
-  }
+  return preferences.some(value => value.length > 256) ? [] : preferences
 }
 
 function selectMainOutput(monitors, preferences, focusedOutput) {

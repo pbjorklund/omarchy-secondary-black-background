@@ -1,6 +1,5 @@
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import "MonitorSelection.js" as MonitorSelection
@@ -8,30 +7,16 @@ import "MonitorSelection.js" as MonitorSelection
 Item {
   id: root
 
-  readonly property string configPath: Quickshell.env("HOME") + "/.config/omarchy/secondary-black-background.json"
-  property var preferredMainMonitors: []
+  readonly property var preferredMainMonitors: MonitorSelection.parsePreferences(
+    Quickshell.env("OMARCHY_SECONDARY_BLACK_BACKGROUND_MAIN_MONITORS")
+  )
   property string mainOutput: ""
-
-  function applyConfig(raw) {
-    preferredMainMonitors = MonitorSelection.parsePreferences(raw)
-    refreshMainOutput()
-  }
 
   function refreshMainOutput() {
     const monitors = Hyprland.monitors ? Hyprland.monitors.values : []
     const focused = Hyprland.focusedMonitor
     const focusedOutput = focused ? String(focused.name || "") : ""
     mainOutput = MonitorSelection.selectMainOutput(monitors, preferredMainMonitors, focusedOutput)
-  }
-
-  FileView {
-    id: configFile
-    path: root.configPath
-    watchChanges: true
-    printErrors: false
-    onLoaded: root.applyConfig(text())
-    onLoadFailed: root.applyConfig("")
-    onFileChanged: reload()
   }
 
   Connections {

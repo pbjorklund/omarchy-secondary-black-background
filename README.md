@@ -12,16 +12,13 @@ omarchy plugin add https://github.com/pbjorklund/omarchy-secondary-black-backgro
 
 By default, the display focused when the plugin starts is treated as the main display.
 
-For a stable choice, create `~/.config/omarchy/secondary-black-background.json` with output names or case-sensitive monitor-description fragments in priority order:
+For a stable choice, set a comma-separated priority list of output names or case-sensitive monitor-description fragments in `~/.config/hypr/envs.lua`:
 
-```json
-{
-  "mainMonitors": [
-    "AW2725Q",
-    "DELL U2725QE"
-  ]
-}
+```lua
+hl.env("OMARCHY_SECONDARY_BLACK_BACKGROUND_MAIN_MONITORS", "AW2725Q,DELL U2725QE")
 ```
+
+Then run `omarchy-restart-shell`.
 
 Find output names and monitor descriptions with:
 
@@ -29,13 +26,12 @@ Find output names and monitor descriptions with:
 hyprctl monitors -j | jq -r '.[] | "\(.name): \(.description)"'
 ```
 
-The plugin watches the configuration file and applies changes without a shell restart. It rejects files over 4,096 characters, lists over 16 entries, and entries over 256 characters. If no configured value matches, it falls back to the focused display, then the first connected display. If monitor state cannot be read, the black overlay stays hidden so the normal Omarchy wallpaper remains visible.
+The preference value is limited to 4,096 characters, 16 entries, and 256 characters per entry. If no configured value matches, the plugin falls back to the focused display, then the first connected display. If monitor state cannot be read, the black overlay stays hidden so the normal Omarchy wallpaper remains visible.
 
 ## Remove
 
 ```bash
 omarchy plugin remove io.github.pbjorklund.secondary-black-background --yes
-rm -f ~/.config/omarchy/secondary-black-background.json
 ```
 
 ## Dependencies

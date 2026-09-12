@@ -5,6 +5,7 @@ import test from "node:test"
 const root = new URL("../", import.meta.url)
 const manifest = JSON.parse(await readFile(new URL("manifest.json", root), "utf8"))
 const readme = await readFile(new URL("README.md", root), "utf8")
+const service = await readFile(new URL("Service.qml", root), "utf8")
 
 const pluginId = "io.github.pbjorklund.secondary-black-background"
 const repositoryUrl = "https://github.com/pbjorklund/omarchy-secondary-black-background.git"
@@ -15,6 +16,11 @@ test("manifest exposes one loadable service", async () => {
   assert.deepEqual(manifest.kinds, ["service"])
   assert.equal(manifest.entryPoints.service, "Service.qml")
   await access(new URL(manifest.entryPoints.service, root))
+})
+
+test("service does not load files or start subprocesses", () => {
+  assert.match(service, /OMARCHY_SECONDARY_BLACK_BACKGROUND_MAIN_MONITORS/)
+  assert.doesNotMatch(service, /Quickshell\.Io|\bFileView\b|\bProcess\b|\bStdioCollector\b/)
 })
 
 test("repository includes marketplace documentation and preview", async () => {
