@@ -3,7 +3,7 @@
   "id": "io.github.pbjorklund.secondary-black-background",
   "name": "Secondary Black Background",
   "version": "1.0.0",
-  "author": "Patrik Bjorklund",
+  "author": "Patrik Björklund",
   "description": "Shows the Omarchy wallpaper on the main display and solid black on secondary displays",
   "kinds": [
     "service"
