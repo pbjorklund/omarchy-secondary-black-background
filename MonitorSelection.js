@@ -12,9 +12,9 @@ function parsePreferences(raw) {
 }
 
 function selectMainOutput(monitors, preferences, focusedOutput) {
-  if (!Array.isArray(monitors)) return ""
+  if (!monitors || !Number.isInteger(monitors.length) || monitors.length < 0 || monitors.length > 64) return ""
 
-  const validMonitors = monitors.filter(monitor =>
+  const validMonitors = Array.from(monitors).filter(monitor =>
     monitor
     && typeof monitor.name === "string"
     && monitor.name.trim().length > 0

@@ -42,6 +42,16 @@ test("selectMainOutput honors configured preference order", () => {
   assert.equal(selectMainOutput(monitors, ["AW2725Q", "Acer"], "DP-2"), "DP-3")
 })
 
+test("selectMainOutput accepts QML array-like monitor models", () => {
+  const monitors = {
+    0: { name: "DP-2", description: "Acer XV240Y" },
+    1: { name: "DP-3", description: "Dell AW2725Q" },
+    length: 2
+  }
+
+  assert.equal(selectMainOutput(monitors, ["AW2725Q"], "DP-2"), "DP-3")
+})
+
 test("selectMainOutput accepts an exact output name", () => {
   const monitors = [
     { name: "DP-2", description: "Acer XV240Y" },

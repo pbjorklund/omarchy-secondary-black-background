@@ -11,12 +11,20 @@ Item {
     Quickshell.env("OMARCHY_SECONDARY_BLACK_BACKGROUND_MAIN_MONITORS")
   )
   property string mainOutput: ""
+  property int startupRefreshAttempts: 0
 
   function refreshMainOutput() {
     const monitors = Hyprland.monitors ? Hyprland.monitors.values : []
     const focused = Hyprland.focusedMonitor
     const focusedOutput = focused ? String(focused.name || "") : ""
     mainOutput = MonitorSelection.selectMainOutput(monitors, preferredMainMonitors, focusedOutput)
+  }
+
+  Connections {
+    target: Quickshell
+    function onScreensChanged() {
+      root.refreshMainOutput()
+    }
   }
 
   Connections {
@@ -30,6 +38,16 @@ Item {
     target: Hyprland
     function onFocusedMonitorChanged() {
       if (root.mainOutput === "") root.refreshMainOutput()
+    }
+  }
+
+  Timer {
+    interval: 100
+    repeat: true
+    running: root.mainOutput === "" && root.startupRefreshAttempts < 20
+    onTriggered: {
+      root.startupRefreshAttempts += 1
+      root.refreshMainOutput()
     }
   }
 

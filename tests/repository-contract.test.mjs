@@ -20,6 +20,8 @@ test("manifest exposes one loadable service", async () => {
 
 test("service does not load files or start subprocesses", () => {
   assert.match(service, /OMARCHY_SECONDARY_BLACK_BACKGROUND_MAIN_MONITORS/)
+  assert.match(service, /onScreensChanged/)
+  assert.match(service, /startupRefreshAttempts < 20/)
   assert.doesNotMatch(service, /Quickshell\.Io|\bFileView\b|\bProcess\b|\bStdioCollector\b/)
 })
 
