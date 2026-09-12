@@ -2,6 +2,8 @@
 
 Keep the Omarchy wallpaper on your main display and show solid black on every secondary display.
 
+![A wide main monitor with wallpaper beside a vertical secondary monitor with a black background](preview.png)
+
 ## Install
 
 ```bash
@@ -41,6 +43,16 @@ rm -f ~/.config/omarchy/secondary-black-background.json
 - Omarchy 4 with its Quickshell desktop shell
 - Hyprland and `hyprctl`
 - `jq` only for the optional monitor-discovery command shown above
+
+## Preview source
+
+The marketplace preview is rendered from `assets/preview.html`:
+
+```bash
+./scripts/render-preview.sh
+```
+
+Rendering requires Chromium and uses only original CSS artwork from this repository.
 
 ## License
 

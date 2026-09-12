@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secondary Black Background preview</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 1600px; height: 900px; margin: 0; overflow: hidden; }
+    body {
+      display: grid;
+      place-items: center;
+      color: #f4f4f5;
+      background:
+        radial-gradient(circle at 75% 20%, rgba(249, 196, 73, .12), transparent 31%),
+        linear-gradient(145deg, #151518, #09090b 72%);
+      font-family: "Liberation Sans", sans-serif;
+    }
+    main { width: 1400px; }
+    h1 { margin: 0 0 18px; font-size: 70px; line-height: 1; letter-spacing: -3px; }
+    .lede { margin: 0 0 52px; color: #a1a1aa; font-size: 46px; }
+    .desk {
+      display: flex;
+      height: 520px;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 54px;
+      border-bottom: 10px solid #27272a;
+    }
+    .display { position: relative; padding: 12px; border-radius: 20px; background: #3f3f46; box-shadow: 0 28px 65px rgba(0, 0, 0, .48); }
+    .display::before { position: absolute; left: 50%; bottom: -82px; width: 22px; height: 82px; background: #3f3f46; content: ""; transform: translateX(-50%); }
+    .display::after { position: absolute; left: 50%; bottom: -92px; width: 150px; height: 14px; border-radius: 8px; background: #52525b; content: ""; transform: translateX(-50%); }
+    .secondary { width: 270px; height: 440px; }
+    .main { width: 760px; height: 440px; }
+    .screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 9px; }
+    .secondary .screen { display: grid; place-items: center; background: #000; }
+    .main .screen {
+      background:
+        radial-gradient(circle at 73% 32%, #f9c449 0 7%, transparent 8%),
+        radial-gradient(circle at 70% 38%, rgba(249, 196, 73, .55), transparent 28%),
+        linear-gradient(135deg, transparent 0 33%, rgba(74, 222, 128, .52) 34% 45%, transparent 46%),
+        linear-gradient(150deg, #172554, #1e3a8a 43%, #0f172a 44% 100%);
+    }
+    .mountain { position: absolute; right: -80px; bottom: -155px; width: 570px; height: 390px; border-radius: 48% 52% 0 0; background: linear-gradient(145deg, #14532d, #052e16); transform: rotate(-9deg); }
+    .label { position: relative; z-index: 1; padding: 10px 16px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #d4d4d8; background: rgba(9, 9, 11, .68); font-size: 46px; font-weight: 700; letter-spacing: 2px; }
+    .main .label { position: absolute; top: 26px; left: 26px; color: #fff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Wallpaper on main. Black on secondary.</h1>
+    <p class="lede">A focused desktop for multi-monitor Omarchy setups.</p>
+    <div class="desk" aria-label="A landscape main monitor with wallpaper beside a portrait secondary monitor with a black background">
+      <div class="display secondary"><div class="screen"><span class="label">BLACK</span></div></div>
+      <div class="display main"><div class="screen"><div class="mountain"></div><span class="label">WALLPAPER</span></div></div>
+    </div>
+  </main>
+</body>
+</html>
