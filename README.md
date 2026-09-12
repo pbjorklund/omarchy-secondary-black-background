@@ -12,7 +12,7 @@ omarchy plugin add https://github.com/pbjorklund/omarchy-secondary-black-backgro
 
 By default, the display focused when the plugin starts is treated as the main display.
 
-For a stable choice, create `~/.config/omarchy/secondary-black-background.json` with one or more monitor-description fragments in priority order:
+For a stable choice, create `~/.config/omarchy/secondary-black-background.json` with output names or case-sensitive monitor-description fragments in priority order:
 
 ```json
 {
@@ -23,13 +23,13 @@ For a stable choice, create `~/.config/omarchy/secondary-black-background.json` 
 }
 ```
 
-Find monitor descriptions with:
+Find output names and monitor descriptions with:
 
 ```bash
-hyprctl monitors -j | jq -r '.[].description'
+hyprctl monitors -j | jq -r '.[] | "\(.name): \(.description)"'
 ```
 
-The plugin watches the configuration file and applies changes without a shell restart. If no configured description matches, it falls back to the focused display, then the first connected display.
+The plugin watches the configuration file and applies changes without a shell restart. If no configured value matches, it falls back to the focused display, then the first connected display. If monitor state cannot be read, the black overlay stays hidden so the normal Omarchy wallpaper remains visible.
 
 ## Remove
 
@@ -40,9 +40,17 @@ rm -f ~/.config/omarchy/secondary-black-background.json
 
 ## Dependencies
 
-- Omarchy 4 with its Quickshell desktop shell
-- Hyprland and `hyprctl`
-- `jq` only for the optional monitor-discovery command shown above
+The plugin has no extra runtime dependencies beyond Omarchy 4 and its Quickshell Hyprland integration. The optional monitor-discovery command shown above uses `hyprctl` and `jq`.
+
+## Development checks
+
+Run the dependency-light test and validation suite with:
+
+```bash
+./scripts/check.sh
+```
+
+The suite requires Node.js and `jq`. It tests configuration parsing, monitor selection, manifest wiring, documentation commands, preview safety, and shell syntax. It also runs ShellCheck and the official Omarchy validator when they are installed.
 
 ## Preview source
 

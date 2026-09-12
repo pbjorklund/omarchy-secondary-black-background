@@ -1,7 +1,9 @@
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
+import "MonitorSelection.js" as MonitorSelection
 
 Item {
   id: root
@@ -11,38 +13,15 @@ Item {
   property string mainOutput: ""
 
   function applyConfig(raw) {
-    try {
-      const config = JSON.parse(raw)
-      preferredMainMonitors = Array.isArray(config.mainMonitors)
-        ? config.mainMonitors.map(value => String(value).trim()).filter(Boolean)
-        : []
-    } catch (error) {
-      preferredMainMonitors = []
-    }
-    refreshMonitors()
+    preferredMainMonitors = MonitorSelection.parsePreferences(raw)
+    refreshMainOutput()
   }
 
-  function refreshMonitors() {
-    if (!monitorProc.running) monitorProc.running = true
-  }
-
-  function selectMainOutput(raw) {
-    try {
-      const monitors = JSON.parse(raw)
-      let main = null
-
-      for (const description of preferredMainMonitors) {
-        main = monitors.find(monitor => String(monitor.description || "").includes(description))
-        if (main) break
-      }
-
-      if (!main) main = monitors.find(monitor => monitor.focused)
-      if (!main && monitors.length > 0) main = monitors[0]
-      mainOutput = main ? String(main.name || "") : ""
-    } catch (error) {
-      console.warn("Could not identify the main monitor:", error)
-      mainOutput = ""
-    }
+  function refreshMainOutput() {
+    const monitors = Hyprland.monitors ? Hyprland.monitors.values : []
+    const focused = Hyprland.focusedMonitor
+    const focusedOutput = focused ? String(focused.name || "") : ""
+    mainOutput = MonitorSelection.selectMainOutput(monitors, preferredMainMonitors, focusedOutput)
   }
 
   FileView {
@@ -55,22 +34,21 @@ Item {
     onFileChanged: reload()
   }
 
-  Process {
-    id: monitorProc
-    command: ["hyprctl", "monitors", "-j"]
-    stdout: StdioCollector {
-      onStreamFinished: root.selectMainOutput(String(text || ""))
+  Connections {
+    target: Hyprland.monitors
+    function onValuesChanged() {
+      root.refreshMainOutput()
     }
   }
 
   Connections {
-    target: Quickshell
-    function onScreensChanged() {
-      root.refreshMonitors()
+    target: Hyprland
+    function onFocusedMonitorChanged() {
+      if (root.mainOutput === "") root.refreshMainOutput()
     }
   }
 
-  Component.onCompleted: refreshMonitors()
+  Component.onCompleted: refreshMainOutput()
 
   Variants {
     model: Quickshell.screens
