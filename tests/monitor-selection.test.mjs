@@ -4,7 +4,7 @@ import test from "node:test"
 import vm from "node:vm"
 
 const source = await readFile(new URL("../MonitorSelection.js", import.meta.url), "utf8")
-const context = vm.createContext({})
+const context = vm.createContext({ JSON: Object.create(JSON) })
 vm.runInContext(source, context, { filename: "MonitorSelection.js" })
 
 const { parsePreferences, selectMainOutput } = context
@@ -19,6 +19,32 @@ test("parsePreferences rejects malformed or unsupported configuration", () => {
   assert.deepEqual(Array.from(parsePreferences("not json")), [])
   assert.deepEqual(Array.from(parsePreferences("[]")), [])
   assert.deepEqual(Array.from(parsePreferences('{"mainMonitors":"DP-3"}')), [])
+})
+
+test("parsePreferences rejects oversized configuration before parsing", () => {
+  const oversized = `${" ".repeat(4096)}not json`
+  const originalParse = context.JSON.parse
+  let parseCalled = false
+
+  context.JSON.parse = value => {
+    parseCalled = true
+    return originalParse(value)
+  }
+
+  try {
+    assert.deepEqual(Array.from(parsePreferences(oversized)), [])
+    assert.equal(parseCalled, false)
+  } finally {
+    context.JSON.parse = originalParse
+  }
+})
+
+test("parsePreferences bounds preference count and length", () => {
+  const tooMany = JSON.stringify({ mainMonitors: Array(17).fill("DP-1") })
+  const tooLong = JSON.stringify({ mainMonitors: ["x".repeat(257)] })
+
+  assert.deepEqual(Array.from(parsePreferences(tooMany)), [])
+  assert.deepEqual(Array.from(parsePreferences(tooLong)), [])
 })
 
 test("selectMainOutput honors configured preference order", () => {

@@ -29,7 +29,7 @@ Find output names and monitor descriptions with:
 hyprctl monitors -j | jq -r '.[] | "\(.name): \(.description)"'
 ```
 
-The plugin watches the configuration file and applies changes without a shell restart. If no configured value matches, it falls back to the focused display, then the first connected display. If monitor state cannot be read, the black overlay stays hidden so the normal Omarchy wallpaper remains visible.
+The plugin watches the configuration file and applies changes without a shell restart. It rejects files over 4,096 characters, lists over 16 entries, and entries over 256 characters. If no configured value matches, it falls back to the focused display, then the first connected display. If monitor state cannot be read, the black overlay stays hidden so the normal Omarchy wallpaper remains visible.
 
 ## Remove
 
